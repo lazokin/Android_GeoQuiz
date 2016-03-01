@@ -12,8 +12,11 @@ public class CheatActivity extends AppCompatActivity {
 
     private static final String EXTRA_ANSWER_IS_TRUE = "com.lazokin.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.lazokin.geoquiz.answer_shown";
+    private static final String KEY_ANSWER_IS_TRUE = "answer_is_true";
+    private static final String KEY_ANSWER_SHOWN = "answer_shown";
 
     private boolean mAnswerIsTrue;
+    private boolean mAnswerShown;
 
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
@@ -40,14 +43,37 @@ public class CheatActivity extends AppCompatActivity {
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+            if (!mAnswerShown) {
                 if (mAnswerIsTrue) {
                     mAnswerTextView.setText(R.string.true_button);
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-                setAnswerShownResult(true);
+                mAnswerShown = true;
+                setAnswerShownResult(mAnswerShown);
+            }
             }
         });
+
+        if (savedInstanceState != null) {
+            mAnswerIsTrue = savedInstanceState.getBoolean(KEY_ANSWER_IS_TRUE, false);
+            mAnswerShown = savedInstanceState.getBoolean(KEY_ANSWER_SHOWN, false);
+            if (mAnswerShown) {
+                if (mAnswerIsTrue) {
+                    mAnswerTextView.setText(R.string.true_button);
+                } else {
+                    mAnswerTextView.setText(R.string.false_button);
+                }
+                setAnswerShownResult(mAnswerShown);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_ANSWER_IS_TRUE, mAnswerIsTrue);
+        outState.putBoolean(KEY_ANSWER_SHOWN, mAnswerShown);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {
